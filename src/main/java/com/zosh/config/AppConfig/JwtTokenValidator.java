@@ -19,12 +19,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Date;
 import java.util.List;
 
 public class JwtTokenValidator extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal( HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         String jwt=request.getHeader(JwtConstant.JWT_HEADER);
 
 
@@ -33,15 +35,24 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         if(jwt!=null){
             jwt=jwt.substring(7);
             try {
-               SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECREATE_KEY.getBytes());
-               Claims claims = Jwts.parser().build().parseSignedClaims(jwt).getBody();
+                SecretKey key = new SecretKeySpec(JwtConstant.SECREATE_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
 
-               String email=String.valueOf(claims.get("email"));
-               String authorities=String.valueOf(claims.get("authorities"));
+
+                //SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECREATE_KEY.getBytes());
+               Claims claims = Jwts.parser().build().parseSignedClaims(jwt).getPayload();
+
+                // Add expiration check
+                if (claims.getExpiration().before(new Date())) {
+                    throw new BadCredentialsException("Token expired");
+                }
+
+                String email=String.valueOf(claims.get("email"));
+                String authorities = String.valueOf(claims.get("Authorities"));
+               //String authorities=String.valueOf(claims.get("Authorities"));
                List<GrantedAuthority> auths= AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
                Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,auths);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+               SecurityContextHolder.getContext().setAuthentication(authentication);
 
             }
             catch(Exception e) {
@@ -54,3 +65,5 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     }
 
 }
+
+

@@ -16,7 +16,7 @@
         Origins 설정을 위해 프런트엔드 URL을 제공해야 합니다.
         프런트엔드 URL을 배열로 설정하여 백엔드에 액세스할 수 있도록 합니다.
       다양한 URL 설정:
-        여러 프런트엔드 URL을 제공하고, 이를 통해 백엔드에 액세스할 수 있도록 합니다.
+`        여러 프런트엔드 URL을` 제공하고, 이를 통해 백엔드에 액세스할 수 있도록 합니다.
       CFG 설정:
         CFG를 사용하여 요청 방법 및 허용된 메소드를 설정합니다.
         헤더 설정을 추가하고, 허용된 헤더를 지정합니다.
@@ -35,7 +35,22 @@
     Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,auths);: 인증 객체를 생성합니다. 사용자의 이메일과 권한 정보가 포함됩니다.
     SecurityContextHolder.getContext().setAuthentication(authentication);: Spring Security의 SecurityContextHolder를 사용하여 현재 사용자의 인증 정보를 설정합니다.
     filterChain.doFilter(request, response);: 다음 필터로 요청을 전달합니다. 이 코드가 없으면 요청이 더 이상 처리되지 않고 중단됩니다.
-
+    
+    appConfig
+  -   시간 순서대로 요청 경로를 처리하는 과정을 정의하고 있습니다.
+.sessionManagement(Management -> Management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+세션 관리 정책을 무상태(STATELESS)로 설정합니다. 즉, 세션을 사용하지 않는 REST API 방식입니다.
+.authorizeHttpRequests(Authorize->Authorize.requestMatchers("/api/**").authenticated()
+/api/** 경로로 시작하는 요청은 인증이 필요합니다. 즉, 유효한 JWT 토큰을 가지고 있어야 합니다.
+.anyRequest().permitAll()
+위의 경로 이외의 다른 모든 요청은 인증 없이 허용됩니다.
+.addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+JWT 토큰을 검증하는 필터를 추가합니다. 이 필터는 BasicAuthenticationFilter 전에 실행됩니다.
+.csrf(csrf -> csrf.disable())
+CSRF 보안을 비활성화합니다. REST API에서는 일반적으로 CSRF 보안이 필요하지 않습니다.
+.cors(cors->cors.configurationSource(corsConfigrationSource()))
+CORS 설정을 적용합니다. CORS 정책은 corsConfigrationSource() 메서드에서 정의됩니다.
+따라서 요약하면, /api/** 경로의 요청은 JWT 토큰을 통해 인증이 필요하지만, 그 외의 요청은 인증 없이 허용됩니다. 이 설정은 시간 순서대로 적용되며, 먼저 세션 관리 정책을 설정하고, 그 다음 요청 경로에 따라 인증 여부를 결정합니다. 마지막으로 JWT 토큰 검증 필터와 CSRF, CORS 설정을 추가합니다.
 - modal 패키지 구성
   - 
 

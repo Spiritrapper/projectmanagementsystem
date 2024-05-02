@@ -1,5 +1,6 @@
 package com.zosh.modal;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

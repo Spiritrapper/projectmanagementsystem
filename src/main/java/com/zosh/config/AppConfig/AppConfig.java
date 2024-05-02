@@ -20,6 +20,7 @@ import java.util.Collections;
 @EnableWebSecurity
 public class AppConfig {
 
+    // 시간순서과정
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(Management -> Management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
