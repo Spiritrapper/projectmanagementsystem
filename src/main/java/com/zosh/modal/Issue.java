@@ -42,6 +42,7 @@ public class Issue {
     @ManyToOne
     private User assignee;
 
+    @JsonIgnore
     @ManyToOne
     private Project project;
 

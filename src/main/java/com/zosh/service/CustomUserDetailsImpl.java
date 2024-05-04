@@ -30,8 +30,8 @@ public class CustomUserDetailsImpl implements UserDetailsService {
         if(user == null) {
             throw new UsernameNotFoundException("user not found with email: " + username);
         }
-        List<GrantedAuthority> authorityList = new ArrayList<>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorityList);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 }
