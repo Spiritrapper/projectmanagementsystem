@@ -25,7 +25,7 @@ public class Project {
 
 
 
-    @ElementCollection
+   
     private List<String> tags = new ArrayList<>();
 
     @JsonIgnore
