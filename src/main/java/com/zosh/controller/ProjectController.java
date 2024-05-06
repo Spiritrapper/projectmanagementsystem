@@ -114,7 +114,8 @@ public class ProjectController {
             @RequestBody Project project
     )throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
-        invitationService.sendInvitation(req.getEmail(), req.getProjects());
+        //Project createdproject=projectService.createProject(project,user);
+        invitationService.sendInvitation(req.getEmail(), req.getProjectId());
         MessageResponse res = new MessageResponse("User invitiation sent");
 
         return  new ResponseEntity<>(res,HttpStatus.OK);

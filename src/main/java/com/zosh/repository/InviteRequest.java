@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InviteRequest {
 
-    private Long Projects;
+    private Long ProjectId;
     private String email;
 }

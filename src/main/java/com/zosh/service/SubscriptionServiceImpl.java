@@ -4,6 +4,7 @@ import com.zosh.modal.PlanType;
 import com.zosh.modal.Subscription;
 import com.zosh.modal.User;
 import com.zosh.repository.SubscriptionRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
         Subscription subscription = subscriptionRepository.findByUserId(userId);
         subscription.setPlanType(planType);
         subscription.setSubscriptionStarDate(LocalDate.now());
-        if(planType.equals(planType.ANNUALLY)){
+        if(planType.equals(PlanType.ANNUALLY)){
             subscription.setSubscriptionEndDate(LocalDate.now().plusMonths(12));
         }else {
             subscription.setSubscriptionEndDate(LocalDate.now().plusMonths(1));
@@ -56,7 +57,7 @@ public class SubscriptionServiceImpl implements SubscriptionService{
     }
 
     @Override
-    public boolean isValid(Subscription subscription) {
+    public boolean isValid(@NotNull Subscription subscription) {
         if(subscription.getPlanType().equals(PlanType.FREE)){
             return true;
         }

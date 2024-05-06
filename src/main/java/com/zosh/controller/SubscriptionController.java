@@ -29,7 +29,7 @@ public class SubscriptionController {
         return  new ResponseEntity<>(subscription, HttpStatus.OK);
     }
 
-    @PostMapping("/user")
+    @PatchMapping("/upgrade")
     public ResponseEntity<Subscription> upgradeSubscription(
             @RequestHeader("Authorization") String jwt,
             @RequestParam PlanType planType
