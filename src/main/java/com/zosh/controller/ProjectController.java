@@ -47,8 +47,8 @@ public class ProjectController {
             @RequestHeader("Authorization")String jwt
     )throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
-        Project projects=projectService.getProjectById(projectId);
-        return  new ResponseEntity<>(projects,HttpStatus.OK);
+        Project project=projectService.getProjectById(projectId);
+        return  new ResponseEntity<>(project,HttpStatus.OK);
     }
 
     @PostMapping
@@ -76,8 +76,8 @@ public class ProjectController {
     @DeleteMapping("/{projectId}")
     public ResponseEntity<MessageResponse> deleteProject(
             @PathVariable Long projectId,
-            @RequestHeader("Authorization")String jwt,
-            @RequestBody Project project
+            @RequestHeader("Authorization")String jwt
+            //@RequestBody Project project   //  "message": "Required request body is missing: public 
     )throws Exception {
         User user = userService.findUserProfileByJwt(jwt);
         projectService.deleteProject(projectId,user.getId());

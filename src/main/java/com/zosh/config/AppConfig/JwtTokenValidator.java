@@ -32,27 +32,40 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         //Bearer jwt
 
-        if(jwt!=null){
+        if(jwt!=null && jwt.startsWith("Bearer ")){
             jwt=jwt.substring(7);
             try {
-                SecretKey key = new SecretKeySpec(JwtConstant.SECREATE_KEY.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+                SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECREATE_KEY.getBytes(StandardCharsets.UTF_8));
 
 
                 //SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECREATE_KEY.getBytes());
-               Claims claims = Jwts.parser().build().parseSignedClaims(jwt).getPayload();
-
+              // Claims claims = Jwts.parser().build().parseSignedClaims(jwt).getPayload();
+               
+               Claims claims = Jwts.parserBuilder()
+                                    .setSigningKey(key)
+                                    .build()
+                                    .parseClaimsJws(jwt)
+                                    .getBody();
                 // Add expiration check
                 if (claims.getExpiration().before(new Date())) {
                     throw new BadCredentialsException("Token expired");
                 }
 
-                String email=String.valueOf(claims.get("email"));
-                String authorities = String.valueOf(claims.get("Authorities"));
-               //String authorities=String.valueOf(claims.get("Authorities"));
-               List<GrantedAuthority> auths= AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+            //     String email=String.valueOf(claims.get("email"));
+            //     String authorities = String.valueOf(claims.get("Authorities"));
+            //    //String authorities=String.valueOf(claims.get("Authorities"));
+            //    List<GrantedAuthority> auths= AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
-               Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,auths);
-               SecurityContextHolder.getContext().setAuthentication(authentication);
+            //    Authentication authentication=new UsernamePasswordAuthenticationToken(email,null,auths);
+            //    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+               String email = claims.get("email", String.class);
+                String authorities = claims.get("Authorities", String.class);
+                List<GrantedAuthority> auths = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
 
             }
             catch(Exception e) {

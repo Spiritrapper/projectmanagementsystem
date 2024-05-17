@@ -1,6 +1,8 @@
 package com.zosh.modal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +19,9 @@ public class User {
 
     private String fullName;
     private String email;
+    
+
+@JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // postman을 통해 pass출력 숨김
     private String password;
 
     @JsonIgnore

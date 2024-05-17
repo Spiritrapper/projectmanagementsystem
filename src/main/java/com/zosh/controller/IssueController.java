@@ -37,6 +37,7 @@ public class IssueController {
     public ResponseEntity<IssueDTO> createIssue(
             @RequestBody IssueRequest issue,
             @RequestHeader("Authorization") String jwt ) throws Exception {
+        
         System.out.println("issue----"+issue);
         User tokenUser = userService.findUserProfileByJwt(jwt);
         User user = userService.findUserById(tokenUser.getId());
