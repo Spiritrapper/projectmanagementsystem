@@ -2,10 +2,12 @@ package com.zosh.controller;
 
 import com.zosh.modal.Issue;
 import com.zosh.modal.IssueDTO;
+import com.zosh.modal.Project;
 import com.zosh.modal.User;
 import com.zosh.request.IssueRequest;
 import com.zosh.response.MessageResponse;
 import com.zosh.service.IssueService;
+import com.zosh.service.ProjectService;
 import com.zosh.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,9 @@ public class IssueController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ProjectService projectService;
+
     @GetMapping("/{issueId}")
     public ResponseEntity<Long> getIssueById(@PathVariable Long issueId) throws Exception {
         return ResponseEntity.ok(issueService.getIssueById(issueId).getId());
@@ -36,11 +41,23 @@ public class IssueController {
     @PostMapping
     public ResponseEntity<IssueDTO> createIssue(
             @RequestBody IssueRequest issue,
+
             @RequestHeader("Authorization") String jwt ) throws Exception {
         
         System.out.println("issue----"+issue);
         User tokenUser = userService.findUserProfileByJwt(jwt);
         User user = userService.findUserById(tokenUser.getId());
+
+            // issue에서 프로젝트 ID를 가져올 때 null 체크를 수행합니다.
+        if (issue.getProjectId() == null) {
+            throw new IllegalArgumentException("Project ID cannot be null");
+        }
+
+        // 프로젝트 ID가 유효한지 확인하기 위해 서비스에서 해당 프로젝트를 조회합니다.
+        Project project = projectService.getProjectById(issue.getProjectId());
+        if (project == null) {
+            throw new IllegalArgumentException("Project with ID " + issue.getProjectId() + " not found");
+        }
 
 
         Issue createIssue = issueService.createIssue(issue, tokenUser);
@@ -50,7 +67,7 @@ public class IssueController {
         issueDTO.setDueDate(createIssue.getDueDate());
         issueDTO.setId(createIssue.getId());
         issueDTO.setProject(createIssue.getProject());
-        issueDTO.setProjectId(createIssue.getProjectID());
+        //issueDTO.setProjectId(createIssue.getProjectId());
         issueDTO.setTags(createIssue.getTags());
         issueDTO.setStatus(createIssue.getStatus());
         issueDTO.setAssignee(createIssue.getAssignee());

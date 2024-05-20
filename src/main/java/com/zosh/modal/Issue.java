@@ -23,8 +23,8 @@ public class Issue {
 
     private String title;
     private String description;
+    private String projectId;
     private String status;
-    private Long projectID;
     private String priority;
     private LocalDate dueDate;
 
@@ -40,13 +40,21 @@ public class Issue {
 //    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
+    @JoinColumn(name = "assignee_id")
     private User assignee;
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @JsonIgnore
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+
+    // Getter for projectId
+    public Long getProjectId() {
+        return project != null ? project.getId() : null;
+    }
 }
