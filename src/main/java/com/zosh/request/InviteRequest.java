@@ -1,4 +1,4 @@
-package com.zosh.repository;
+package com.zosh.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

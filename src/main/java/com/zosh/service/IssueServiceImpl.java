@@ -35,17 +35,17 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public List<Issue> getIssueByProjectId(Long projectId) throws Exception {
-        return issueRepository.findByProjectId(projectId);
+        return issueRepository.findByProject_Id(projectId);
     }
 
     @Override
     public Issue createIssue(IssueRequest issueRequest, User user) throws Exception {
-        Project project = projectService.getProjectById(issue.getProjectId());
+        Project project = projectService.getProjectById(issueRequest.getProjectId());
 
         Issue issue = new Issue();
         issue.setTitle(issueRequest.getTitle());
         issue.setDescription(issueRequest.getDescription());
-        issue.setProjectId(issue.getProjectId());
+        //issue.setProjectId(issueRequest.getProjectId());
         issue.setStatus(issueRequest.getStatus());
         
         issue.setPriority(issueRequest.getPriority());

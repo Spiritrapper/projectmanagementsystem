@@ -40,27 +40,27 @@ public class IssueController {
 
     @PostMapping
     public ResponseEntity<IssueDTO> createIssue(
-            @RequestBody IssueRequest issue,
+            @RequestBody IssueRequest issueRequest,
 
             @RequestHeader("Authorization") String jwt ) throws Exception {
         
-        System.out.println("issue----"+issue);
+        System.out.println("issue----"+issueRequest);
         User tokenUser = userService.findUserProfileByJwt(jwt);
         User user = userService.findUserById(tokenUser.getId());
 
             // issue에서 프로젝트 ID를 가져올 때 null 체크를 수행합니다.
-        if (issue.getProjectId() == null) {
+        if (issueRequest.getProjectId() == null) {
             throw new IllegalArgumentException("Project ID cannot be null");
         }
 
         // 프로젝트 ID가 유효한지 확인하기 위해 서비스에서 해당 프로젝트를 조회합니다.
-        Project project = projectService.getProjectById(issue.getProjectId());
+        Project project = projectService.getProjectById(issueRequest.getProjectId());
         if (project == null) {
-            throw new IllegalArgumentException("Project with ID " + issue.getProjectId() + " not found");
+            throw new IllegalArgumentException("Project with ID " + issueRequest.getProjectId() + " not found");
         }
 
 
-        Issue createIssue = issueService.createIssue(issue, tokenUser);
+        Issue createIssue = issueService.createIssue(issueRequest, tokenUser);
         IssueDTO issueDTO = new IssueDTO();
         issueDTO.setDescription(createIssue.getDescription());
         issueDTO.setTitle(createIssue.getTitle());
@@ -72,6 +72,8 @@ public class IssueController {
         issueDTO.setStatus(createIssue.getStatus());
         issueDTO.setAssignee(createIssue.getAssignee());
         issueDTO.setPriority(createIssue.getPriority());
+        //issueDTO.setProjectId(createIssue.getProject().getId());
+
 
 
 

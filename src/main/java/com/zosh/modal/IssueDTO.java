@@ -15,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
 
 @Data
 @AllArgsConstructor
@@ -40,5 +41,7 @@ public class IssueDTO {
     private User assignee;
     //private List<Comment> comments = new ArrayList<>();
 
+    @Transient
+    private String projectId;
 
 }

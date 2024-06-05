@@ -4,7 +4,7 @@ import com.zosh.modal.Chat;
 import com.zosh.modal.Invitation;
 import com.zosh.modal.Project;
 import com.zosh.modal.User;
-import com.zosh.repository.InviteRequest;
+import com.zosh.request.InviteRequest;
 import com.zosh.response.MessageResponse;
 import com.zosh.service.InvitationService;
 import com.zosh.service.ProjectService;
