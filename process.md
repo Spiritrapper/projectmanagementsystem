@@ -61,3 +61,5 @@ CORS 설정을 적용합니다. CORS 정책은 corsConfigrationSource() 메서�
 - controller 패키지
 
 - response 패키지
+
+jwt버전 맞추기
